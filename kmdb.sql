@@ -99,15 +99,93 @@
 .mode column
 .headers off
 
+
 -- Drop existing tables, so you'll start fresh each time this script is run.
 -- TODO!
+DROP TABLE IF EXISTS film_cast;
+DROP TABLE IF EXISTS movies;
+DROP TABLE IF EXISTS actors;
+DROP TABLE IF EXISTS studios;
 
 -- Create new tables, according to your domain model
 -- TODO!
 
+-- creating table for studio
+CREATE TABLE studios (
+  studio_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  studio_name TEXT
+);
+
+-- creating table for movies
+CREATE TABLE movies (
+  movie_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  movie_title TEXT,
+  year_released INTEGER,
+  mpaa_rating TEXT,
+  studio_id INTEGER,
+  FOREIGN KEY(studio_id) REFERENCES studios(studio_id)
+);
+
+-- creating table for actors
+CREATE TABLE actors (
+  actor_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  actor_name TEXT
+);
+
+-- creating table for cast
+CREATE TABLE film_cast (
+  film_cast_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  movie_id INTEGER,
+  actor_id INTEGER,
+  actor_role TEXT,
+  FOREIGN KEY(actor_id) REFERENCES actors(actor_id),
+  FOREIGN KEY(movie_id) REFERENCES movies(movie_id)
+);
+
 -- Insert data into your database that reflects the sample data shown above
 -- Use hard-coded foreign key IDs when necessary
 -- TODO!
+
+-- insert values to cast table
+INSERT INTO studios VALUES (1,'Warner Bros.');
+
+-- insert values to movies table
+INSERT INTO movies VALUES (10001,'Batman Begins',2005,'PG-13',1);
+INSERT INTO movies VALUES (10002,'The Dark Knight',2008,'PG-13',1);
+INSERT INTO movies VALUES (10003,'The Dark Knight Rises',2012,'PG-13',1);
+
+-- insert values to actors table
+INSERT INTO actors VALUES (20001,'Christian Bale');
+INSERT INTO actors VALUES (20002,'Michael Caine');
+INSERT INTO actors VALUES (20003,'Liam Neeson');
+INSERT INTO actors VALUES (20004,'Katie Holmes');
+INSERT INTO actors VALUES (20005,'Gary Oldman');
+INSERT INTO actors VALUES (20006,'Heath Ledger');
+INSERT INTO actors VALUES (20007,'Aaron Eckhart');
+INSERT INTO actors VALUES (20008,'Maggie Gyllenhaal');
+INSERT INTO actors VALUES (20009,'Tom Hardy');
+INSERT INTO actors VALUES (20010,"Joseph Gordon-Levitt");
+INSERT INTO actors VALUES (20011,'Anne Hathaway');
+
+-- insert values to cast table
+INSERT INTO film_cast VALUES (1, 10001, 20001, 'Bruce Wayne');
+INSERT INTO film_cast VALUES (2, 10001, 20002, 'Alfred');
+INSERT INTO film_cast VALUES (3, 10001, 20003, "Ra's Al Ghul");
+INSERT INTO film_cast VALUES (4, 10001, 20004, 'Rachel Dawes');
+INSERT INTO film_cast VALUES (5, 10001, 20005, 'Commissioner Gordon');
+INSERT INTO film_cast VALUES (6, 10002, 20001, 'Bruce Wayne');
+INSERT INTO film_cast VALUES (7, 10002, 20006, 'Joker');
+INSERT INTO film_cast VALUES (8, 10002, 20007, 'Harvey Dent');
+INSERT INTO film_cast VALUES (9, 10002, 20002, 'Alfred');
+INSERT INTO film_cast VALUES (10, 10002, 20008, 'Rachel Dawes');
+INSERT INTO film_cast VALUES (11, 10003, 20001, 'Bruce Wayne');
+INSERT INTO film_cast VALUES (12, 10003, 20005, 'Commissioner Gordon');
+INSERT INTO film_cast VALUES (13, 10003, 20009, 'Bane');
+INSERT INTO film_cast VALUES (14, 10003, 20010, 'John Blake');
+INSERT INTO film_cast VALUES (15, 10003, 20011, 'Selina Kyle');
+
+
+
 
 -- Prints a header for the movies output
 .print "Movies"
@@ -116,6 +194,17 @@
 
 -- The SQL statement for the movies output
 -- TODO!
+-- I tried to google how to make auto-adjust but have not succeeded 
+.width 22 13 5 20
+
+select 
+movies.movie_title,
+movies.year_released,
+movies.mpaa_rating,
+studios.studio_name
+from movies
+    left join studios
+    on movies.studio_id = studios.studio_id;
 
 -- Prints a header for the cast output
 .print ""
@@ -126,3 +215,18 @@
 
 -- The SQL statement for the cast output
 -- TODO!
+-- I tried to google how to make auto-adjust but have not succeeded 
+.width 22 20 20
+
+select 
+movies.movie_title,
+actors.actor_name,
+film_cast.actor_role
+
+from movies
+    left join film_cast
+    on movies.movie_id = film_cast.movie_id
+    left join actors
+    on film_cast.actor_id = actors.actor_id
+
+
