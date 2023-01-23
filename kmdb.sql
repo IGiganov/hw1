@@ -228,5 +228,6 @@ from movies
     on movies.movie_id = film_cast.movie_id
     left join actors
     on film_cast.actor_id = actors.actor_id
+    order by movies.movie_id, film_cast.film_cast_id
 
 
